@@ -1,10 +1,10 @@
-
+#include <stdio.h>
+#include <raylib.h>
 #include <stdlib.h>
 
-#include "raylib.h"
+void main (){
 
-int main(void)
-{
 
-    return 0;
+    
 }
+
