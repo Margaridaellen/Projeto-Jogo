@@ -1,0 +1,33 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "Compilar Raylib Local",
+      "command": "/usr/bin/gcc",
+      "args": [
+        "-Wall",
+        "-Wextra",
+        "-g3",
+        "${file}",
+        "-o",
+        "${fileDirname}/output/${fileBasenameNoExtension}",
+        "-I${fileDirname}",
+        "-L${fileDirname}",
+        "-lraylib",
+        "-lGL",
+        "-lm",
+        "-lpthread",
+        "-ldl",
+        "-lrt",
+        "-lX11",
+        "-Wl,-rpath,${fileDirname}"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"]
+    }
+  ]
+}
