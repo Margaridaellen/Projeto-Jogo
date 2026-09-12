@@ -3,7 +3,7 @@
   "tasks": [
     {
       "type": "shell",
-      "label": "Compilar Raylib Local",
+      "label": "Compilar Raylib",
       "command": "/usr/bin/gcc",
       "args": [
         "-Wall",
