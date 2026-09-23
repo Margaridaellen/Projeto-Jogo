@@ -7,55 +7,61 @@
 #define alturaTela 1080
 #define movimento 10.0f
 
-int main(void)
+int Personagem(void)
 {
-
     InitWindow(larguraTela, alturaTela, "inicio");
     SetTargetFPS(60);
 
-    // Posições iniciais
     float pos1 = 400.0f;
     float pos2 = 300.0f;
     float r = 25.0f;
+    float pos3 = 800.0f;
+    float pos4 = 300.0f;
+    float r2 = 25.0f;
 
-    // Velocida em pixels
     float v_inicial = 500.0f;
+    float v_inicialVilao = 500.0f;
 
     while (!WindowShouldClose())
     {
-        // Calcular o deltatime(dt)
         float dt = GetFrameTime();
         float v = v_inicial * dt;
+        float v2 = v_inicialVilao * dt;
 
         if (IsKeyDown(KEY_RIGHT))
-        {
-            pos1 = pos1 + v; // direita
-        }
+            pos1 += v;
         if (IsKeyDown(KEY_LEFT))
-        {
-            pos1 = pos1 - v; // esquerda
-        }
+            pos1 -= v;
         if (IsKeyDown(KEY_DOWN))
-        {
-            pos2 = pos2 + v; // para baixo
-        }
+            pos2 += v;
         if (IsKeyDown(KEY_UP))
-        {
-            pos2 = pos2 - v; // para cima
-        }
+            pos2 -= v;
 
-        BeginDrawing(); // O que deve aparecer na tela
+        if (IsKeyDown(KEY_D))
+            pos3 += v2;
+        if (IsKeyDown(KEY_A))
+            pos3 -= v2;
+        if (IsKeyDown(KEY_S))
+            pos4 += v2;
+        if (IsKeyDown(KEY_W))
+            pos4 -= v2;
+
+        BeginDrawing();
         ClearBackground(AZUL_ESCURO);
 
-        // Desenhar circulo (pos1 e pos2 são parâmetos que definem o centro do circulo e o r controla o tamanho)
         DrawCircle((int)pos1, (int)pos2, r, WHITE);
+        DrawCircle((int)pos3, (int)pos4, r2, WHITE);
 
-        // Escreve texto na tela, 10-distância da borda esquerda até o inicio do texto, 10-Topo da janela até o topo do texto, 20-Tamanho da fonte
         DrawText("Utilize as setas do teclado para se movimentar", 10, 10, 20, WHITE);
         EndDrawing();
     }
 
     CloseWindow();
-
     return 0;
 }
+
+int main(void)
+{
+    return Personagem();
+}
+
