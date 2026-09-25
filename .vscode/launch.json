@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Executar Raylib",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/Jogo/inicio/output/Personagens",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/Jogo/inicio/output",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
+        {
+          "description": "Habilitar pretty-printing para gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "Compilar Raylib"
+    }
+  ]
+}

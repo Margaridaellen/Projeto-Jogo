@@ -4,30 +4,17 @@
     {
       "type": "shell",
       "label": "Compilar Raylib",
-      "command": "/usr/bin/gcc",
-      "args": [
-        "-Wall",
-        "-Wextra",
-        "-g3",
-        "${file}",
-        "-o",
-        "${fileDirname}/output/${fileBasenameNoExtension}",
-        "-I${fileDirname}",
-        "-L${fileDirname}",
-        "-lraylib",
-        "-lGL",
-        "-lm",
-        "-lpthread",
-        "-ldl",
-        "-lrt",
-        "-lX11",
-        "-Wl,-rpath,${fileDirname}"
-      ],
+      "command": "mkdir -p \"${workspaceFolder}/Jogo/inicio/output\" && /usr/bin/gcc -Wall -Wextra -g3 \"${workspaceFolder}/Jogo/inicio/Principais_Funcoes.c\" \"${workspaceFolder}/Jogo/inicio/Prota.c\" \"${workspaceFolder}/Jogo/inicio/Robo.c\" -o \"${workspaceFolder}/Jogo/inicio/output/Principais_Funcoes\" -I\"${workspaceFolder}/Jogo\" -lraylib -lGL -lm -lpthread -ldl -lrt -lX11",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "group": {
         "kind": "build",
         "isDefault": true
       },
-      "problemMatcher": ["$gcc"]
+      "problemMatcher": [
+        "$gcc"
+      ]
     }
   ]
 }
