@@ -1,14 +1,5 @@
-#include <raylib.h>
+#include "jogo.h"
 
-typedef struct
-{
-    float posX;
-    float posY;
-    float raio;
-    float velocidadeY;
-} GameObject;
-
-extern GameObject personagem;
 extern Texture2D personagemParado[2];
 extern Texture2D animCorrendoProta[5];
 extern Texture2D personagemPulando[4];

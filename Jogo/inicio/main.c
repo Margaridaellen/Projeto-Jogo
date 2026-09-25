@@ -46,50 +46,6 @@ bool estavaNoArInimigo = false;
 
 Rectangle piso = {-1000.0f, 770.0f, 25000.0f, 600.0f};
 
-int main(void)
-{
-    InitWindow(larguraTela, alturaTela, "inicio");
-    SetTargetFPS(60);
-    inicializarRecursos();
-
-    while (!WindowShouldClose())
-    {
-        float dt = GetFrameTime();
-        float v = 500.0f * dt;
-
-        if (tempoPuloInicioPersonagem > 0.0f) tempoPuloInicioPersonagem -= dt;
-
-        if (IsKeyPressed(KEY_SPACE)) jumpBufferPersonagem = 0.12f;
-        if (jumpBufferPersonagem > 0.0f)
-        {
-            jumpBufferPersonagem -= dt;
-            if (jumpBufferPersonagem < 0.0f) jumpBufferPersonagem = 0.0f;
-        }
-
-        if (isGroundedPersonagem) coyoteTimerPersonagem = 0.10f;
-        else
-        {
-            coyoteTimerPersonagem -= dt;
-            if (coyoteTimerPersonagem < 0.0f) coyoteTimerPersonagem = 0.0f;
-        }
-
-        atualizarPersonagem(dt, v);
-        atualizarInimigo(dt, v);
-
-        BeginDrawing();
-        ClearBackground(CINZA);
-        DrawTexture(TexFundo, 0, 0, WHITE);
-        desenharPersonagem();
-        desenharInimigo();
-        DrawText("Utilize as setas para mover e ESPACO para pular", 10, 10, 20, WHITE);
-        EndDrawing();
-    }
-
-    liberarRecursos();
-    CloseWindow();
-    return 0;
-}
-
 void inicializarRecursos(void)
 {
     Image img = LoadImage("/home/samuel/Área de trabalho/Projeto_Jogo/Jogo/Imagem Fundo/FundoLab1.png");
@@ -139,4 +95,48 @@ void liberarRecursos(void)
     for (int i = 0; i < 1; i++) UnloadTexture(inimigoParado[i]);
     for (int i = 0; i < 3; i++) UnloadTexture(animCorrendoRobo[i]);
     for (int i = 0; i < 2; i++) UnloadTexture(inimigoPulando[i]);
+}
+
+int main(void)
+{
+    InitWindow(larguraTela, alturaTela, "inicio");
+    SetTargetFPS(60);
+    inicializarRecursos();
+
+    while (!WindowShouldClose())
+    {
+        float dt = GetFrameTime();
+        float v = 500.0f * dt;
+
+        if (tempoPuloInicioPersonagem > 0.0f) tempoPuloInicioPersonagem -= dt;
+
+        if (IsKeyPressed(KEY_SPACE)) jumpBufferPersonagem = 0.12f;
+        if (jumpBufferPersonagem > 0.0f)
+        {
+            jumpBufferPersonagem -= dt;
+            if (jumpBufferPersonagem < 0.0f) jumpBufferPersonagem = 0.0f;
+        }
+
+        if (isGroundedPersonagem) coyoteTimerPersonagem = 0.10f;
+        else
+        {
+            coyoteTimerPersonagem -= dt;
+            if (coyoteTimerPersonagem < 0.0f) coyoteTimerPersonagem = 0.0f;
+        }
+
+        atualizarPersonagem(dt, v);
+        atualizarInimigo(dt, v);
+
+        BeginDrawing();
+        ClearBackground(CINZA);
+        DrawTexture(TexFundo, 0, 0, WHITE);
+        desenharPersonagem();
+        desenharInimigo();
+        DrawText("Utilize as setas para mover e ESPACO para pular", 10, 10, 20, WHITE);
+        EndDrawing();
+    }
+
+    liberarRecursos();
+    CloseWindow();
+    return 0;
 }
