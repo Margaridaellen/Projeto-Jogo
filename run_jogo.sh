@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-cd "$(dirname "$0")"
-mkdir -p "Jogo/inicio/output"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+mkdir -p "$ROOT_DIR/Jogo/inicio/output"
 
 gcc -Wall -Wextra -g3 \
-  "Jogo/inicio/main.c" \
-  "Jogo/inicio/Prota.c" \
-  "Jogo/inicio/Robo.c" \
-  -o "Jogo/inicio/output/Principais_Funcoes" \
-  -I"/home/samuel/Área de trabalho/Projeto_Jogo/Jogo" \
+  "$ROOT_DIR/Jogo/inicio/main.c" \
+  "$ROOT_DIR/Jogo/inicio/Prota.c" \
+  "$ROOT_DIR/Jogo/inicio/Robo.c" \
+  -o "$ROOT_DIR/Jogo/inicio/output/Principais_Funcoes" \
+  -I"$ROOT_DIR/Jogo" \
   -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 
-./Jogo/inicio/output/Principais_Funcoes
+"$ROOT_DIR/Jogo/inicio/output/Principais_Funcoes"

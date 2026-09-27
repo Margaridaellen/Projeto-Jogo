@@ -1,3 +1,6 @@
 jogo
-jogo
 *.o
+*.exe
+Jogo/inicio/output/
+Jogo/**/output/
+
