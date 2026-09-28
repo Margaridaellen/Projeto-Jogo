@@ -150,7 +150,7 @@ int main(void)
         desenharPersonagem();
         desenharInimigo();
         EndMode2D();
-        DrawText("Utilize as setas para mover e ESPACO para pular", 10, 10, 14, WHITE);
+        DrawText("Utilize as setas para mover e W e seta para cima para pular", 10, 10, 20, WHITE);
         EndDrawing();
     }
 
