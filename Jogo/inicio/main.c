@@ -120,7 +120,7 @@ int main(void)
 
         if (tempoPuloInicioPersonagem > 0.0f) tempoPuloInicioPersonagem -= dt;
 
-        if (IsKeyPressed(KEY_SPACE)) jumpBufferPersonagem = 0.12f;
+        if (IsKeyPressed(KEY_UP)) jumpBufferPersonagem = 0.12f;
         if (jumpBufferPersonagem > 0.0f)
         {
             jumpBufferPersonagem -= dt;
@@ -142,7 +142,7 @@ int main(void)
         DrawTexture(TexFundo, 0, 0, WHITE);
         desenharPersonagem();
         desenharInimigo();
-        DrawText("Utilize as setas para mover e ESPACO para pular", 10, 10, 20, WHITE);
+        DrawText("Utilize as setas para mover e W e seta para cima para pular", 10, 10, 20, WHITE);
         EndDrawing();
     }
 
