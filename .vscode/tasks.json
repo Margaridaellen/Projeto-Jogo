@@ -4,7 +4,11 @@
     {
       "type": "shell",
       "label": "Compilar Raylib",
-      "command": "mkdir -p \"${workspaceFolder}/Jogo/inicio/output\" && /usr/bin/gcc -Wall -Wextra -g3 \"${workspaceFolder}/Jogo/inicio/main.c\" \"${workspaceFolder}/Jogo/inicio/Prota.c\" \"${workspaceFolder}/Jogo/inicio/Robo.c\" -o \"${workspaceFolder}/Jogo/inicio/output/Principais_Funcoes\" -I\"${workspaceFolder}/Jogo\" -lraylib -lGL -lm -lpthread -ldl -lrt -lX11",
+      "command": "./run_jogo.sh",
+      "args": ["--build-only"],
+      "windows": {
+        "command": "${workspaceFolder}\\run_jogo.bat"
+      },
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -19,10 +23,11 @@
     {
       "type": "shell",
       "label": "Executar jogo",
-      "command": "\"${workspaceFolder}/Jogo/inicio/output/Principais_Funcoes\"",
-      "dependsOn": [
-        "Compilar Raylib"
-      ],
+      "command": "./run_jogo.sh",
+      "args": [],
+      "windows": {
+        "command": "${workspaceFolder}\\run_jogo.bat"
+      },
       "options": {
         "cwd": "${workspaceFolder}"
       },

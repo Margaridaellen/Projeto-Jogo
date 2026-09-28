@@ -4,8 +4,8 @@
 #include "jogo.h"
 
 #define CINZA (Color){211, 211, 211, 255}
-#define larguraTela 1920
-#define alturaTela 1080
+#define larguraTela 1480
+#define alturaTela 720
 
 static char caminhoArquivo[1024];
 
@@ -93,6 +93,8 @@ void inicializarRecursos(void)
     alturaPadraoPersonagem = personagemParado[0].height * escalaPersonagem;
     larguraPadraoInimigo = inimigoParado[0].width * escalaInimigo;
     alturaPadraoInimigo = inimigoParado[0].height * escalaInimigo;
+    personagem.posY = piso.y - alturaPadraoPersonagem;
+    isGroundedPersonagem = true;
     inimigo.posY = piso.y - alturaPadraoInimigo + 89.0f;
 }
 
@@ -109,8 +111,12 @@ void liberarRecursos(void)
 
 int main(void)
 {
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_MAXIMIZED);
     InitWindow(larguraTela, alturaTela, "inicio");
+    MaximizeWindow();
     SetTargetFPS(60);
+    Camera2D camera = {0};
+    camera.zoom = (float)larguraTela / 1920.0f;
     inicializarRecursos();
 
     while (!WindowShouldClose())
@@ -120,7 +126,7 @@ int main(void)
 
         if (tempoPuloInicioPersonagem > 0.0f) tempoPuloInicioPersonagem -= dt;
 
-        if (IsKeyPressed(KEY_SPACE)) jumpBufferPersonagem = 0.12f;
+        if (IsKeyPressed(KEY_UP)) jumpBufferPersonagem = 0.12f;
         if (jumpBufferPersonagem > 0.0f)
         {
             jumpBufferPersonagem -= dt;
@@ -139,10 +145,12 @@ int main(void)
 
         BeginDrawing();
         ClearBackground(CINZA);
+        BeginMode2D(camera);
         DrawTexture(TexFundo, 0, 0, WHITE);
         desenharPersonagem();
         desenharInimigo();
-        DrawText("Utilize as setas para mover e ESPACO para pular", 10, 10, 20, WHITE);
+        EndMode2D();
+        DrawText("Utilize as setas para mover e ESPACO para pular", 10, 10, 14, WHITE);
         EndDrawing();
     }
 

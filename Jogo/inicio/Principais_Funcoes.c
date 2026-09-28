@@ -59,7 +59,7 @@ int main(void)
 
         if (tempoPuloInicioPersonagem > 0.0f) tempoPuloInicioPersonagem -= dt;
 
-        if (IsKeyPressed(KEY_SPACE)) jumpBufferPersonagem = 0.12f;
+        if (IsKeyPressed(KEY_UP)) jumpBufferPersonagem = 0.12f;
         if (jumpBufferPersonagem > 0.0f)
         {
             jumpBufferPersonagem -= dt;
