@@ -1,5 +1,6 @@
 #include "jogo.h"
 
+// Essas variáveis foram criadas em outro arquivo e são compartilhadas com o robô.
 extern Texture2D inimigoParado[1];
 extern Texture2D animCorrendoRobo[3];
 extern Texture2D inimigoPulando[2];
@@ -9,12 +10,15 @@ extern float tempoAnimacaoInimigo, tempoAterrissagemInimigo;
 extern bool olhandoParaEsquerdaRobo, roboCorrendo, isGroundedInimigo, estavaNoArInimigo;
 extern Rectangle piso;
 
+// Atualiza o movimento, o pulo, a colisão e a animação do robô.
 void atualizarInimigo(float dt, float v)
 {
+    // O valor negativo faz o robô subir no eixo vertical durante o pulo.
     const float forcaPulo = -700.0f;
     const float tempoPorFrame = 0.08f;
     bool inimigoEmMovimento = IsKeyDown(KEY_D) || IsKeyDown(KEY_A);
 
+    // Move o robô e atualiza o lado para o qual ele está olhando.
     if (IsKeyDown(KEY_D))
     {
         inimigo.posX += v;
@@ -26,11 +30,13 @@ void atualizarInimigo(float dt, float v)
         olhandoParaEsquerdaRobo = true;
     }
 
+    // Aplica a gravidade e atualiza a posição vertical do robô.
     estavaNoArInimigo = !isGroundedInimigo;
     if (!isGroundedInimigo) inimigo.velocidadeY += 1000.0f * dt;
     inimigo.posY += inimigo.velocidadeY * dt;
     isGroundedInimigo = false;
 
+    // Usa um retângulo para verificar a colisão do robô com o piso.
     Rectangle sensorChaoInimigo = {inimigo.posX, inimigo.posY + 1.0f, larguraPadraoInimigo, alturaPadraoInimigo};
     if (CheckCollisionRecs(sensorChaoInimigo, piso))
     {
@@ -42,9 +48,11 @@ void atualizarInimigo(float dt, float v)
         }
     }
 
+    // Ativa a animação de aterrissagem quando o robô toca o chão.
     if (estavaNoArInimigo && isGroundedInimigo) tempoAterrissagemInimigo = 0.15f;
     if (tempoAterrissagemInimigo > 0.0f) tempoAterrissagemInimigo -= dt;
 
+    // O robô só pode pular quando está apoiado no piso.
     if (isGroundedInimigo && IsKeyPressed(KEY_W))
     {
         inimigo.velocidadeY = forcaPulo;
@@ -52,6 +60,7 @@ void atualizarInimigo(float dt, float v)
         tempoAterrissagemInimigo = 0.0f;
     }
 
+    // Define a animação de corrida ou deixa o robô parado.
     roboCorrendo = inimigoEmMovimento && isGroundedInimigo;
 
     if (roboCorrendo)
@@ -70,8 +79,10 @@ void atualizarInimigo(float dt, float v)
     }
 }
 
+// Escolhe a textura atual e desenha o robô na tela.
 void desenharInimigo(void)
 {
+    // O robô aumenta de tamanho durante o pulo para acompanhar suas imagens.
     Texture2D texturaInimigo;
     float escalaRoboRender = 1.20f;
     float posYRoboRender = inimigo.posY;
@@ -96,6 +107,7 @@ void desenharInimigo(void)
         texturaInimigo = inimigoParado[0];
     }
 
+    // A largura negativa espelha a textura quando o robô olha para a esquerda.
     Rectangle sourceInimigo = {0.0f, 0.0f, olhandoParaEsquerdaRobo ? -(float)texturaInimigo.width : (float)texturaInimigo.width, (float)texturaInimigo.height};
     Rectangle destInimigo = {inimigo.posX, posYRoboRender, larguraPadraoInimigo * escalaRoboRender, alturaPadraoInimigo * escalaRoboRender};
     Vector2 origin = {0.0f, 0.0f};

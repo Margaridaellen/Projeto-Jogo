@@ -3,13 +3,17 @@
 #include <stdlib.h>
 #include "jogo.h"
 
+// Define a cor usada antes de desenhar a imagem do cenário.
 #define CINZA (Color){211, 211, 211, 255}
+// Define a largura e a altura da janela em pixels.
 #define larguraTela 1920
 #define alturaTela 1080
 
+// Cria os objetos do protagonista e do inimigo com suas posições iniciais.
 GameObject personagem = {200.0f, 200.0f, 30.0f, 0.0f};
 GameObject inimigo = {700.0f, 500.0f, 30.0f, 0.0f};
 
+// Declara as texturas que serão carregadas e usadas durante o jogo.
 Texture2D TexFundo;
 Texture2D personagemParado[2];
 Texture2D animCorrendoProta[5];
@@ -25,6 +29,7 @@ float alturaPadraoPersonagem;
 float larguraPadraoInimigo;
 float alturaPadraoInimigo;
 
+// Guarda o quadro atual e o tempo decorrido de cada animação.
 int framePersonagem = 0;
 int frameInimigo = 0;
 float tempoAnimacaoPersonagem = 0.0f;
@@ -35,6 +40,7 @@ float tempoPuloInicioPersonagem = 0.0f;
 float jumpBufferPersonagem = 0.0f;
 float coyoteTimerPersonagem = 0.0f;
 
+// Controla a direção, o movimento e o contato dos personagens com o chão.
 bool olhandoParaEsquerda = false;
 bool olhandoParaEsquerdaRobo = false;
 bool protagonistaCorrendo = false;
@@ -46,19 +52,24 @@ bool estavaNoArInimigo = false;
 
 Rectangle piso = {-1000.0f, 770.0f, 25000.0f, 600.0f};
 
+// É o ponto de entrada do programa e controla o ciclo principal do jogo.
 int main(void)
 {
+    // Cria a janela, define a quantidade de quadros por segundo e carrega os recursos.
     InitWindow(larguraTela, alturaTela, "inicio");
     SetTargetFPS(60);
     inicializarRecursos();
 
     while (!WindowShouldClose())
     {
+        // dt representa o tempo desde o último quadro e deixa o movimento independente do FPS.
         float dt = GetFrameTime();
         float v = 500.0f * dt;
 
+        // Diminui os temporizadores usados para controlar o início do pulo.
         if (tempoPuloInicioPersonagem > 0.0f) tempoPuloInicioPersonagem -= dt;
 
+        // Guarda o comando de pulo por alguns milissegundos para facilitar o controle.
         if (IsKeyPressed(KEY_UP)) jumpBufferPersonagem = 0.12f;
         if (jumpBufferPersonagem > 0.0f)
         {
@@ -66,6 +77,7 @@ int main(void)
             if (jumpBufferPersonagem < 0.0f) jumpBufferPersonagem = 0.0f;
         }
 
+        // Permite pular por um pequeno intervalo depois de sair da plataforma.
         if (isGroundedPersonagem) coyoteTimerPersonagem = 0.10f;
         else
         {
@@ -76,6 +88,7 @@ int main(void)
         atualizarPersonagem(dt, v);
         atualizarInimigo(dt, v);
 
+        // Desenha o cenário e os personagens na tela.
         BeginDrawing();
         ClearBackground(CINZA);
         DrawTexture(TexFundo, 0, 0, WHITE);
@@ -90,8 +103,11 @@ int main(void)
     return 0;
 }
 
+// Carrega todas as imagens e calcula o tamanho padrão dos personagens.
 void inicializarRecursos(void)
 {
+    // Remove as cores do chão da imagem para que ele seja substituído pelo piso do jogo.
+    //deixanod o piso transparente. Deixa ailuzão que o piso do fundo png seja "Parte" do chão.
     Image img = LoadImage("/home/samuel/Área de trabalho/Projeto_Jogo/Jogo/Imagem Fundo/FundoLab1.png");
     Color corChaoEscuro = (Color){57, 64, 73, 255};
     Color corChaoAmarelo = (Color){218, 181, 70, 255};
@@ -123,6 +139,7 @@ void inicializarRecursos(void)
     inimigoPulando[0] = LoadTexture("/home/samuel/Área de trabalho/Projeto_Jogo/Jogo/Imagem Robo/RoboPulando/WhatsApp_Image_2026-09-24_at_22.15.34__5_-removebg-preview.png");
     inimigoPulando[1] = LoadTexture("/home/samuel/Área de trabalho/Projeto_Jogo/Jogo/Imagem Robo/RoboPulando/WhatsApp_Image_2026-09-24_at_22.15.34__6_-removebg-preview.png");
 
+    // Calcula as dimensões de desenho usando o tamanho original e a escala de cada personagem.
     larguraPadraoPersonagem = personagemParado[0].width * escalaPersonagem;
     alturaPadraoPersonagem = personagemParado[0].height * escalaPersonagem;
     larguraPadraoInimigo = inimigoParado[0].width * escalaInimigo;
@@ -130,8 +147,10 @@ void inicializarRecursos(void)
     inimigo.posY = piso.y - alturaPadraoInimigo + 89.0f;
 }
 
+// Libera as texturas carregadas para devolver a memória ao sistema operacional.
 void liberarRecursos(void)
 {
+    // Cada vetor precisa ser percorrido usando a quantidade de texturas que foi carregada.
     UnloadTexture(TexFundo);
     for (int i = 0; i < 2; i++) UnloadTexture(personagemParado[i]);
     for (int i = 0; i < 5; i++) UnloadTexture(animCorrendoProta[i]);
