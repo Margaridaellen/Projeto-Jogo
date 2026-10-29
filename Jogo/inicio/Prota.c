@@ -1,4 +1,5 @@
 #include "jogo.h"
+#include "colisao.h"
 
 // A palavra extern informa que essas variáveis foram criadas em outro arquivo.
 // Este arquivo apenas usa os mesmos dados para atualizar e desenhar o protagonista.
@@ -15,6 +16,9 @@ extern Rectangle piso;
 // Atualiza a posição, o pulo, a colisão e a animação do protagonista.
 void atualizarPersonagem(float dt, float v)
 {
+    // 1. Salva a posição X ANTES de processar a movimentação
+    float posXAntigo = personagem.posX;
+
     // A força do pulo aponta para cima, por isso seu valor é negativo no eixo Y.
     const float forcaPulo = -700.0f;
     const float tempoPorFrame = 0.08f;
@@ -94,6 +98,12 @@ void atualizarPersonagem(float dt, float v)
             framePersonagem = (framePersonagem + 1) % 2;
         }
     }
+
+    // 2. Se detetar colisão com o inimigo, reverte o movimento na hora
+    if (checarColisaoObjetos(personagem, inimigo))
+    {
+        personagem.posX = posXAntigo;
+    }
 }
 
 // Escolhe a textura correta e desenha o protagonista na tela.
@@ -140,4 +150,3 @@ void desenharPersonagem(void)
 
     DrawTexturePro(texturaPersonagem, sourcePersonagem, destPersonagem, origin, 0.0f, WHITE);
 }
-

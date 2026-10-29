@@ -12,6 +12,8 @@ typedef struct
     float posY;
     float raio;
     float velocidadeY;
+    float altura;
+    float largura;
 } GameObject;
 //O "extern" vai estender o dado para o copilador saber que ele pode ir alem de um arquivo 
 //fazendo com que seja possivel chamalo fora desse arquivo.

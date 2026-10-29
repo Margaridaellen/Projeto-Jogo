@@ -8,6 +8,7 @@ gcc -std=c11 -Wall -Wextra -g3 \
   "$ROOT_DIR/Jogo/inicio/main.c" \
   "$ROOT_DIR/Jogo/inicio/Prota.c" \
   "$ROOT_DIR/Jogo/inicio/Robo.c" \
+  "$ROOT_DIR/Jogo/inicio/colisao.c" \
   -o "$ROOT_DIR/Jogo/inicio/output/Principais_Funcoes" \
   -I"$ROOT_DIR/Jogo" \
   -lraylib -lGL -lm -lpthread -ldl -lrt -lX11

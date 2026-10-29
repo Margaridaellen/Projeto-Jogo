@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <stdlib.h>
 #include "jogo.h"
+#include "colisao.h"
 //Define a cor de fundo antes da imagem como "Padrão"
 #define CINZA (Color){211, 211, 211, 255}
 // O formato da tela em pixels.
@@ -132,6 +133,12 @@ void inicializarRecursos(void)
     personagem.posY = piso.y - alturaPadraoPersonagem;
     isGroundedPersonagem = true;
     inimigo.posY = piso.y - alturaPadraoInimigo + 89.0f;
+
+    personagem.largura = larguraPadraoPersonagem;
+    personagem.altura = alturaPadraoPersonagem;
+
+    inimigo.largura = larguraPadraoInimigo;
+    inimigo.altura = alturaPadraoInimigo;
 }
 //Cria os loops dos vetores de animação.
 void liberarRecursos(void)

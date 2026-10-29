@@ -145,6 +145,12 @@ void inicializarRecursos(void)
     larguraPadraoInimigo = inimigoParado[0].width * escalaInimigo;
     alturaPadraoInimigo = inimigoParado[0].height * escalaInimigo;
     inimigo.posY = piso.y - alturaPadraoInimigo + 89.0f;
+
+    personagem.largura = larguraPadraoPersonagem;
+    personagem.altura = alturaPadraoPersonagem;
+
+    inimigo.largura = larguraPadraoInimigo;
+    inimigo.altura = alturaPadraoInimigo;
 }
 
 // Libera as texturas carregadas para devolver a memória ao sistema operacional.

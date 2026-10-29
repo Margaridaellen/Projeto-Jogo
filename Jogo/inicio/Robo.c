@@ -1,4 +1,5 @@
 #include "jogo.h"
+#include "colisao.h"
 
 // Essas variáveis foram criadas em outro arquivo e são compartilhadas com o robô.
 extern Texture2D inimigoParado[1];
@@ -13,6 +14,9 @@ extern Rectangle piso;
 // Atualiza o movimento, o pulo, a colisão e a animação do robô.
 void atualizarInimigo(float dt, float v)
 {
+    // 1. Salva a posição X ANTES de processar a movimentação do robô
+    float posXAntigoInimigo = inimigo.posX;
+
     // O valor negativo faz o robô subir no eixo vertical durante o pulo.
     const float forcaPulo = -700.0f;
     const float tempoPorFrame = 0.08f;
@@ -77,6 +81,12 @@ void atualizarInimigo(float dt, float v)
     {
         frameInimigo = 0;
     }
+
+    // 2. Se colidir com o protagonista, reverte o movimento do robô
+    if (checarColisaoObjetos(personagem, inimigo))
+    {
+        inimigo.posX = posXAntigoInimigo;
+    }
 }
 
 // Escolhe a textura atual e desenha o robô na tela.
@@ -114,4 +124,3 @@ void desenharInimigo(void)
 
     DrawTexturePro(texturaInimigo, sourceInimigo, destInimigo, origin, 0.0f, WHITE);
 }
-

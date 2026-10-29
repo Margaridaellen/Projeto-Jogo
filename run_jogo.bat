@@ -16,6 +16,7 @@ mkdir "%ROOT%Jogo\inicio\output" >nul 2>&1
   "%ROOT%Jogo\inicio\main.c" ^
   "%ROOT%Jogo\inicio\Prota.c" ^
   "%ROOT%Jogo\inicio\Robo.c" ^
+  "%ROOT%Jogo\inicio\colisao.c" ^
   -o "%ROOT%Jogo\inicio\output\Principais_Funcoes.exe" ^
   -I"%ROOT%Jogo" ^
   -L"%RAYLIB_ROOT%\lib" ^
