@@ -1,46 +1,62 @@
 #include "jogo.h"
 #include "colisao.h"
 
-// Essas variáveis foram criadas em outro arquivo e são compartilhadas com o robô.
+// Variáveis compartilhadas com outros arquivos
 extern Texture2D inimigoParado[1];
 extern Texture2D animCorrendoRobo[3];
 extern Texture2D inimigoPulando[2];
 extern float escalaInimigo, larguraPadraoInimigo, alturaPadraoInimigo;
+extern float larguraPadraoPersonagem, alturaPadraoPersonagem;
 extern int frameInimigo;
 extern float tempoAnimacaoInimigo, tempoAterrissagemInimigo;
 extern bool olhandoParaEsquerdaRobo, roboCorrendo, isGroundedInimigo, estavaNoArInimigo;
 extern Rectangle piso;
 
-// Atualiza o movimento, o pulo, a colisão e a animação do robô.
 void atualizarInimigo(float dt, float v)
 {
-    // 1. Salva a posição X ANTES de processar a movimentação do robô
+    // 1. Guarda a posição inicial para detectar movimento real
     float posXAntigoInimigo = inimigo.posX;
 
-    // O valor negativo faz o robô subir no eixo vertical durante o pulo.
     const float forcaPulo = -700.0f;
     const float tempoPorFrame = 0.08f;
-    bool inimigoEmMovimento = IsKeyDown(KEY_D) || IsKeyDown(KEY_A);
 
-    // Move o robô e atualiza o lado para o qual ele está olhando.
-    if (IsKeyDown(KEY_D))
+    // 2. Define as caixas para verificação de proximidade
+    Rectangle caixaPersonagem = {
+        personagem.posX, 
+        personagem.posY, 
+        larguraPadraoPersonagem, 
+        alturaPadraoPersonagem
+    };
+
+    Rectangle sensorProximidade = { 
+        inimigo.posX - 25.0f, 
+        inimigo.posY, 
+        larguraPadraoInimigo + 50.0f, 
+        alturaPadraoInimigo 
+    };
+
+    // 3. Move o robô apenas se o jogador estiver FORA do sensor de proximidade
+    if (!CheckCollisionRecs(sensorProximidade, caixaPersonagem))
     {
-        inimigo.posX += v;
-        olhandoParaEsquerdaRobo = false;
-    }
-    if (IsKeyDown(KEY_A))
-    {
-        inimigo.posX -= v;
-        olhandoParaEsquerdaRobo = true;
+        if (personagem.posX > inimigo.posX)
+        {
+            inimigo.posX += v;
+            olhandoParaEsquerdaRobo = false;
+        }
+        else if (personagem.posX < inimigo.posX)
+        {
+            inimigo.posX -= v;
+            olhandoParaEsquerdaRobo = true;
+        }
     }
 
-    // Aplica a gravidade e atualiza a posição vertical do robô.
+    // Gravidade e movimentação vertical
     estavaNoArInimigo = !isGroundedInimigo;
     if (!isGroundedInimigo) inimigo.velocidadeY += 1000.0f * dt;
     inimigo.posY += inimigo.velocidadeY * dt;
     isGroundedInimigo = false;
 
-    // Usa um retângulo para verificar a colisão do robô com o piso.
+    // Colisão com o piso
     Rectangle sensorChaoInimigo = {inimigo.posX, inimigo.posY + 1.0f, larguraPadraoInimigo, alturaPadraoInimigo};
     if (CheckCollisionRecs(sensorChaoInimigo, piso))
     {
@@ -52,11 +68,10 @@ void atualizarInimigo(float dt, float v)
         }
     }
 
-    // Ativa a animação de aterrissagem quando o robô toca o chão.
+    // Animação de aterrissagem e pulo
     if (estavaNoArInimigo && isGroundedInimigo) tempoAterrissagemInimigo = 0.15f;
     if (tempoAterrissagemInimigo > 0.0f) tempoAterrissagemInimigo -= dt;
 
-    // O robô só pode pular quando está apoiado no piso.
     if (isGroundedInimigo && IsKeyPressed(KEY_W))
     {
         inimigo.velocidadeY = forcaPulo;
@@ -64,7 +79,14 @@ void atualizarInimigo(float dt, float v)
         tempoAterrissagemInimigo = 0.0f;
     }
 
-    // Define a animação de corrida ou deixa o robô parado.
+    // 4. Barreira física de segurança: reverte se colidir diretamente
+    if (checarColisaoObjetos(personagem, inimigo))
+    {
+        inimigo.posX = posXAntigoInimigo;
+    }
+
+    // 5. Atualiza a animação APÓS resolver todas as colisões
+    bool inimigoEmMovimento = (inimigo.posX != posXAntigoInimigo);
     roboCorrendo = inimigoEmMovimento && isGroundedInimigo;
 
     if (roboCorrendo)
@@ -81,18 +103,10 @@ void atualizarInimigo(float dt, float v)
     {
         frameInimigo = 0;
     }
-
-    // 2. Se colidir com o protagonista, reverte o movimento do robô
-    if (checarColisaoObjetos(personagem, inimigo))
-    {
-        inimigo.posX = posXAntigoInimigo;
-    }
 }
 
-// Escolhe a textura atual e desenha o robô na tela.
 void desenharInimigo(void)
 {
-    // O robô aumenta de tamanho durante o pulo para acompanhar suas imagens.
     Texture2D texturaInimigo;
     float escalaRoboRender = 1.20f;
     float posYRoboRender = inimigo.posY;
@@ -117,7 +131,6 @@ void desenharInimigo(void)
         texturaInimigo = inimigoParado[0];
     }
 
-    // A largura negativa espelha a textura quando o robô olha para a esquerda.
     Rectangle sourceInimigo = {0.0f, 0.0f, olhandoParaEsquerdaRobo ? -(float)texturaInimigo.width : (float)texturaInimigo.width, (float)texturaInimigo.height};
     Rectangle destInimigo = {inimigo.posX, posYRoboRender, larguraPadraoInimigo * escalaRoboRender, alturaPadraoInimigo * escalaRoboRender};
     Vector2 origin = {0.0f, 0.0f};

@@ -2,11 +2,12 @@
 #include "colisao.h"
 
 // A palavra extern informa que essas variáveis foram criadas em outro arquivo.
-// Este arquivo apenas usa os mesmos dados para atualizar e desenhar o protagonista.
 extern Texture2D personagemParado[2];
 extern Texture2D animCorrendoProta[5];
 extern Texture2D personagemPulando[4];
 extern float escalaPersonagem, larguraPadraoPersonagem, alturaPadraoPersonagem;
+// [NOVO] Necessário para saber a largura do inimigo no cálculo de separação
+extern float larguraPadraoInimigo; 
 extern int framePersonagem;
 extern float tempoAnimacaoPersonagem, tempoAterrissagem, tempoPuloInicioPersonagem;
 extern bool olhandoParaEsquerda, protagonistaCorrendo, isGroundedPersonagem, estavaNoAr;
@@ -16,13 +17,10 @@ extern Rectangle piso;
 // Atualiza a posição, o pulo, a colisão e a animação do protagonista.
 void atualizarPersonagem(float dt, float v)
 {
-    // 1. Salva a posição X ANTES de processar a movimentação
     float posXAntigo = personagem.posX;
 
-    // A força do pulo aponta para cima, por isso seu valor é negativo no eixo Y.
     const float forcaPulo = -700.0f;
     const float tempoPorFrame = 0.08f;
-    // Verifica se alguma tecla de movimento está sendo pressionada neste quadro.
     bool personagemEmMovimento = IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_LEFT);
 
     // Move o protagonista e registra para qual lado ele está olhando.
@@ -99,17 +97,25 @@ void atualizarPersonagem(float dt, float v)
         }
     }
 
-    // 2. Se detetar colisão com o inimigo, reverte o movimento na hora
+    // [ALTERADO] Separação física exata (evita o travamento "grudado")
     if (checarColisaoObjetos(personagem, inimigo))
     {
-        personagem.posX = posXAntigo;
+        if (personagem.posX < inimigo.posX)
+        {
+            // Jogador à esquerda -> empurra para fora da borda esquerda do inimigo
+            personagem.posX = inimigo.posX - larguraPadraoPersonagem;
+        }
+        else
+        {
+            // Jogador à direita -> empurra para fora da borda direita do inimigo
+            personagem.posX = inimigo.posX + larguraPadraoInimigo;
+        }
     }
 }
 
 // Escolhe a textura correta e desenha o protagonista na tela.
 void desenharPersonagem(void)
 {
-    // A escala e a posição podem mudar durante o pulo para acompanhar cada quadro.
     Texture2D texturaPersonagem;
     float escalaPersonagemRender = 1.0f;
     float posYPersonagemRender = personagem.posY;
@@ -143,7 +149,6 @@ void desenharPersonagem(void)
         texturaPersonagem = personagemParado[framePersonagem % 2];
     }
 
-    // Uma largura negativa espelha a textura quando o personagem olha para a esquerda.
     Rectangle sourcePersonagem = {0.0f, 0.0f, olhandoParaEsquerda ? -(float)texturaPersonagem.width : (float)texturaPersonagem.width, (float)texturaPersonagem.height};
     Rectangle destPersonagem = {personagem.posX, posYPersonagemRender, larguraPadraoPersonagem * escalaPersonagemRender, alturaPadraoPersonagem * escalaPersonagemRender};
     Vector2 origin = {0.0f, 0.0f};
