@@ -35,6 +35,8 @@ void atualizarPersonagem(float dt, float v)
         olhandoParaEsquerda = true;
     }
 
+
+
     // Aplica a gravidade e atualiza a posição vertical do personagem.
     estavaNoAr = !isGroundedPersonagem;
     if (!isGroundedPersonagem) personagem.velocidadeY += 1000.0f * dt;
@@ -67,6 +69,13 @@ void atualizarPersonagem(float dt, float v)
         tempoAterrissagem = 0.0f;
         tempoPuloInicioPersonagem = 0.12f;
     }
+    //O personagem se abaixa
+    if (IsKeyDown(KEY_DOWN))
+    {
+    personagem.altura = alturaPadraoPersonagem / 2;
+    personagem.posY += alturaPadraoPersonagem / 2;
+    }
+
 
     // Escolhe a animação de corrida, pulo ou repouso conforme o estado atual.
     protagonistaCorrendo = personagemEmMovimento && isGroundedPersonagem;
