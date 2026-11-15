@@ -21,10 +21,10 @@ extern GameObject personagem;
 extern GameObject inimigo;
 //A "Texture2D" é uma struct do Raylib para trasnformar algo em visual
 // de acordo com os agrupamentos de paramentros de dados impostos no "Texture2D".
-extern Texture2D TexFundo;
 extern Texture2D personagemParado[2];
 extern Texture2D animCorrendoProta[5];
 extern Texture2D personagemPulando[4];
+extern Texture2D animAgachandoProta[3];
 extern Texture2D inimigoParado[1];
 extern Texture2D animCorrendoRobo[3];
 extern Texture2D inimigoPulando[2];
@@ -54,6 +54,7 @@ extern bool isGroundedPersonagem;
 extern bool isGroundedInimigo;
 extern bool estavaNoAr;
 extern bool estavaNoArInimigo;
+extern bool gameOver;
 //Determina o "Piso" do jogo como um formato geometrico ultilizando uma struct.
 extern Rectangle piso;
 //Adicona novas funções que serão usadas ao decorrerdo projeto.

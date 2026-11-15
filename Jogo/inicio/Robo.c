@@ -11,43 +11,40 @@ extern int frameInimigo;
 extern float tempoAnimacaoInimigo, tempoAterrissagemInimigo;
 extern bool olhandoParaEsquerdaRobo, roboCorrendo, isGroundedInimigo, estavaNoArInimigo;
 extern Rectangle piso;
+extern bool gameOver;
+
+static float tempoFaseVelocidadeRobo = 0.0f;
+static bool roboRapido = false;
 
 void atualizarInimigo(float dt, float v)
 {
-    // 1. Guarda a posição inicial para detectar movimento real
+    if (gameOver) return;
+
     float posXAntigoInimigo = inimigo.posX;
 
-    const float forcaPulo = -700.0f;
     const float tempoPorFrame = 0.08f;
-
-    // 2. Define as caixas para verificação de proximidade
-    Rectangle caixaPersonagem = {
-        personagem.posX, 
-        personagem.posY, 
-        larguraPadraoPersonagem, 
-        alturaPadraoPersonagem
-    };
-
-    Rectangle sensorProximidade = { 
-        inimigo.posX - 25.0f, 
-        inimigo.posY, 
-        larguraPadraoInimigo + 50.0f, 
-        alturaPadraoInimigo 
-    };
-
-    // 3. Move o robô apenas se o jogador estiver FORA do sensor de proximidade
-    if (!CheckCollisionRecs(sensorProximidade, caixaPersonagem))
+    if (tempoFaseVelocidadeRobo <= 0.0f)
     {
-        if (personagem.posX > inimigo.posX)
-        {
-            inimigo.posX += v;
-            olhandoParaEsquerdaRobo = false;
-        }
-        else if (personagem.posX < inimigo.posX)
-        {
-            inimigo.posX -= v;
-            olhandoParaEsquerdaRobo = true;
-        }
+        roboRapido = !roboRapido;
+        tempoFaseVelocidadeRobo = roboRapido ? 0.8f : 2.8f;
+    }
+    tempoFaseVelocidadeRobo -= dt;
+    float velocidadeRobo = v * (roboRapido ? 1.3f : 0.55f);
+
+    float centroPersonagem = personagem.posX + personagem.largura / 2.0f;
+    float centroInimigo = inimigo.posX + inimigo.largura / 2.0f;
+    if (centroPersonagem - centroInimigo > 850.0f && IsKeyDown(KEY_RIGHT))
+        velocidadeRobo = v;
+
+    if (centroPersonagem > centroInimigo)
+    {
+        inimigo.posX += velocidadeRobo;
+        olhandoParaEsquerdaRobo = false;
+    }
+    else if (centroPersonagem < centroInimigo)
+    {
+        inimigo.posX -= velocidadeRobo;
+        olhandoParaEsquerdaRobo = true;
     }
 
     // Gravidade e movimentação vertical
@@ -72,20 +69,13 @@ void atualizarInimigo(float dt, float v)
     if (estavaNoArInimigo && isGroundedInimigo) tempoAterrissagemInimigo = 0.15f;
     if (tempoAterrissagemInimigo > 0.0f) tempoAterrissagemInimigo -= dt;
 
-    if (isGroundedInimigo && IsKeyPressed(KEY_W))
-    {
-        inimigo.velocidadeY = forcaPulo;
-        isGroundedInimigo = false;
-        tempoAterrissagemInimigo = 0.0f;
-    }
-
-    // 4. Barreira física de segurança: reverte se colidir diretamente
     if (checarColisaoObjetos(personagem, inimigo))
     {
-        inimigo.posX = posXAntigoInimigo;
+        gameOver = true;
+        roboCorrendo = false;
+        return;
     }
 
-    // 5. Atualiza a animação APÓS resolver todas as colisões
     bool inimigoEmMovimento = (inimigo.posX != posXAntigoInimigo);
     roboCorrendo = inimigoEmMovimento && isGroundedInimigo;
 
